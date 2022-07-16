@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { DynamicModule, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
 
-@Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+  public static initialize(): DynamicModule {
+    const Modules = [UserModule];
+    return {
+      module: AppModule,
+      imports: [ConfigModule.forRoot(), ...Modules],
+      controllers: [],
+      providers: [],
+    };
+  }
+}
