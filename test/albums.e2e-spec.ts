@@ -119,7 +119,7 @@ describe('Album (e2e)', () => {
       expect(cleanupResponse.statusCode).toBe(StatusCodes.NO_CONTENT);
     });
 
-    it('should respond with BAD_REQUEST in case of invalid required data', async () => {
+    it('should respond with BAD_REQUEST in case of invalid required DB', async () => {
       const responses = await Promise.all([
         unauthorizedRequest
           .post(albumsRoutes.create)

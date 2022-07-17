@@ -1,18 +1,24 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '../data/db';
+import { db } from '../DB/db';
 import { validateUuid } from 'src/utils';
 import { Track, TrackErrors } from './track.entity';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class TrackService {
-  constructor() {}
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   async createTrack(createDto: CreateTrackDto): Promise<Track> {
     const newTrack: Track = {
@@ -56,16 +62,16 @@ export class TrackService {
       throw new BadRequestException(TrackErrors.INVALID_ID);
     }
 
-    const condidateIndex = db.tracks.findIndex((track) => track.id === id);
+    const tracksIndex = db.tracks.findIndex((track) => track.id === id);
 
-    if (condidateIndex !== -1) {
-      const oldData = db.tracks[condidateIndex];
-      db.tracks[condidateIndex] = { ...oldData, ...dto };
+    if (tracksIndex !== -1) {
+      const oldData = db.tracks[tracksIndex];
+      db.tracks[tracksIndex] = { ...oldData, ...dto };
     } else {
       throw new NotFoundException(TrackErrors.NOT_FOUND);
     }
 
-    return db.tracks[condidateIndex];
+    return db.tracks[tracksIndex];
   }
 
   async deleteRef(id: string, field: string): Promise<void> {
@@ -83,10 +89,12 @@ export class TrackService {
       throw new BadRequestException(TrackErrors.INVALID_ID);
     }
 
-    const condidateIndex = db.tracks.findIndex((track) => track.id === id);
+    await this.favoritesService.deleteRef(id, 'tracks');
 
-    if (condidateIndex !== -1) {
-      db.tracks.splice(condidateIndex, 1);
+    const tracksIndex = db.tracks.findIndex((track) => track.id === id);
+
+    if (tracksIndex !== -1) {
+      db.tracks.splice(tracksIndex, 1);
     } else {
       throw new NotFoundException(TrackErrors.NOT_FOUND);
     }

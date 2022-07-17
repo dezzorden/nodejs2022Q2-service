@@ -7,7 +7,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User, UserErrors } from './user.entity';
-import { db } from '../data/db';
+import { db } from '../DB/db';
 import { UpdatePasswordDto } from './dto/updatePassword.dto';
 import { validateUuid } from 'src/utils';
 
@@ -93,10 +93,10 @@ export class UserService {
       throw new BadRequestException(UserErrors.INVALID_ID);
     }
 
-    const condidateIndex = db.users.findIndex((user) => user.id === id);
+    const usersIndex = db.users.findIndex((user) => user.id === id);
 
-    if (condidateIndex !== -1) {
-      db.users.splice(condidateIndex, 1);
+    if (usersIndex !== -1) {
+      db.users.splice(usersIndex, 1);
     } else {
       throw new NotFoundException(UserErrors.NOT_FOUND);
     }

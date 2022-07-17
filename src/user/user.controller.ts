@@ -19,13 +19,11 @@ export class UserController {
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<User> {
-    console.log(id);
     return this.userService.getUserById(id);
   }
 
   @Get()
   async getAll(): Promise<User[]> {
-    console.log(1);
     return this.userService.getAllUsers();
   }
 

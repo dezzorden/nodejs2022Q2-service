@@ -6,7 +6,7 @@ export interface Album {
 }
 
 export enum AlbumErrors {
-  INCORRECT_BODY = 'Request body does not contain required fields',
-  NOT_FOUND = 'Album not found',
-  INVALID_ID = 'Album Id is invalid (not uuid)',
+  INCORRECT_BODY = 'Тело запроса не содержит обязательных полей',
+  NOT_FOUND = 'Альбом не найден',
+  INVALID_ID = 'Идентификатор альбома недействителен (не uuid)',
 }
