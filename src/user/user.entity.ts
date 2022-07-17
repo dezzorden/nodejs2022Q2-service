@@ -8,8 +8,8 @@ export interface User {
 }
 
 export enum UserErrors {
-  INCORRECT_BODY = 'Request body does not contain required fields',
-  WRONG_OLD_PASSWORD = 'Old passoword is wrong',
-  NOT_FOUND = 'User not found',
-  INVALID_ID = 'User Id is invalid (not uuid)',
+  INCORRECT_BODY = 'Тело запроса не содержит обязательных полей',
+  WRONG_OLD_PASSWORD = 'Новый пароль совпадает со старым',
+  NOT_FOUND = 'Пользователь не найден',
+  INVALID_ID = 'Идентификатор пользователя недействителен (не uuid)',
 }

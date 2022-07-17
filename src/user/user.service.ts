@@ -14,6 +14,7 @@ import { validateUuid } from 'src/utils';
 @Injectable()
 export class UserService {
   async createUser(createDto: CreateUserDto): Promise<User> {
+    console.log(createDto.login, createDto.password);
     if (!createDto.login || !createDto.password) {
       throw new BadRequestException(UserErrors.INCORRECT_BODY);
     }
@@ -39,13 +40,13 @@ export class UserService {
       throw new BadRequestException(UserErrors.INVALID_ID);
     }
 
-    const condidate = db.users.find((user) => user.id === id);
+    const users = db.users.find((user) => user.id === id);
 
-    if (!condidate) {
+    if (!users) {
       throw new NotFoundException(UserErrors.NOT_FOUND);
     }
 
-    const responce: User = { ...condidate };
+    const responce: User = { ...users };
     delete responce.password;
 
     return responce;
@@ -56,6 +57,9 @@ export class UserService {
   }
 
   async updateUser(dto: UpdatePasswordDto, id: string): Promise<User> {
+    if (!validateUuid(id)) {
+      throw new BadRequestException(UserErrors.INVALID_ID);
+    }
     if (
       dto.newPassword === dto.oldPassword ||
       !dto.newPassword ||
@@ -64,17 +68,13 @@ export class UserService {
       throw new BadRequestException(UserErrors.INCORRECT_BODY);
     }
 
-    if (!validateUuid(id)) {
-      throw new BadRequestException(UserErrors.INVALID_ID);
-    }
+    const usersIndex = db.users.findIndex((user) => user.id === id);
 
-    const condidateIndex = db.users.findIndex((user) => user.id === id);
-
-    if (condidateIndex !== -1) {
-      if (db.users[condidateIndex].password === dto.oldPassword) {
-        db.users[condidateIndex].password = dto.newPassword;
-        db.users[condidateIndex].version += 1;
-        db.users[condidateIndex].updatedAt = Date.now();
+    if (usersIndex !== -1) {
+      if (db.users[usersIndex].password === dto.oldPassword) {
+        db.users[usersIndex].password = dto.newPassword;
+        db.users[usersIndex].version += 1;
+        db.users[usersIndex].updatedAt = Date.now();
       } else {
         throw new ForbiddenException(UserErrors.WRONG_OLD_PASSWORD);
       }
@@ -82,7 +82,7 @@ export class UserService {
       throw new NotFoundException(UserErrors.NOT_FOUND);
     }
 
-    const responce: User = { ...db.users[condidateIndex] };
+    const responce: User = { ...db.users[usersIndex] };
     delete responce.password;
 
     return responce;
