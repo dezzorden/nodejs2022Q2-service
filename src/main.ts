@@ -9,11 +9,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule.initialize(), { cors: true });
   app.enableCors();
 
-  const config = new DocumentBuilder()
-    .setTitle('Сервер Nest')
-    .setDescription('Документация по REST API')
-    .setVersion('0.0.1')
-    .build();
   const API_DOCS = await readFile(
     join(dirname(__dirname), 'doc', 'api.yaml'),
     'utf-8',
