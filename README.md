@@ -15,7 +15,7 @@ git clone https://github.com/dezzorden/nodejs2022Q2-service.git
 
 ```
 cd nodejs2022Q2-service
-git checkout develop
+git checkout dev
 npm install
 ```
 
